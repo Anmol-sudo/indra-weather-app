@@ -1,8 +1,12 @@
-
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Dimensions, FlatList, StyleSheet, View, Vibration } from "react-native";
-
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  View,
+  Vibration,
+} from "react-native";
 
 import Header from "./components/Header";
 import MainWeatherDisplay from "./components/MainWeatherDisplay";
@@ -143,13 +147,32 @@ export default function App() {
               city: data.name,
             },
           };
+        } else if (section.key === "aqi") {
+
+          // Function to get AQI description
+          const getAQIDescription = (aqi) => {
+            if (aqi <= 50) return "Good";
+            if (aqi <= 100) return "Moderate";
+            if (aqi <= 150) return "Unhealthy for Sensitive Groups";
+            if (aqi <= 200) return "Unhealthy";
+            if (aqi <= 300) return "Very Unhealthy";
+            return "Hazardous";
+          };
+          
+          return {
+            ...section,
+            props: {
+              aqi: data.aqi,
+              aqiDescription: getAQIDescription(data.aqi),
+              city: data.name,
+            },
+          };
         } else {
           return section;
         }
       })
     );
   };
-
 
   const handleLocationChange = (newLocation, weatherData) => {
     setCurrentLocation(newLocation);

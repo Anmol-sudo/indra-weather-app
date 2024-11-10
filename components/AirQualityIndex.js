@@ -2,17 +2,18 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const AirQualityIndex = ({ props }) => {
-    let {aqi, description} = props;
+  
+    let { aqi, aqiDescription, city } = props;
     
     return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Air Quality Index</Text>
-      <View style={styles.content}>
-        <Text style={styles.aqiValue}>{aqi}</Text>
-        <Text style={styles.description}>{description}</Text>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Air Quality Index for {city}</Text>
+        <View style={styles.content}>
+          <Text style={styles.aqiValue}>{aqi}</Text>
+          <Text style={styles.description}>{aqiDescription}</Text>
+        </View>
       </View>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({

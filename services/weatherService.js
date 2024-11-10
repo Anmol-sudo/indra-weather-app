@@ -14,7 +14,20 @@ export const getCurrentWeather = async (city) => {
       },
     });
 
-    return response.data;
+    // Fetch AQI data
+    const coords = response.data.coord;
+    const aqiResponse = await axios.get(`${BASE_URL}/air_pollution`, {
+      params: {
+        lat: coords.lat,
+        lon: coords.lon,
+        appid: API_KEY,
+      },
+    });
+
+    return {
+      ...response.data,
+      aqi: aqiResponse.data.list[0].main.aqi,
+    };
   } catch (error) {
     console.error("Error fetching weather data:", error);
     throw error;

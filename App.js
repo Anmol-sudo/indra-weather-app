@@ -201,7 +201,6 @@ export default function App() {
           };
         } 
         else if (section.key === "uvIndex") {
-
           return {
             ...section,
             props: {
@@ -210,7 +209,26 @@ export default function App() {
               city: weatherData.name,
             },
           };
-        } 
+        }
+        else if (section.key === "windForecast") {
+          return {
+            ...section,
+            props: {
+              city: weatherData.name,
+              currentWind: weatherData.windForecast.currentWind,
+              forecast: weatherData.windForecast.forecast,
+            },
+          };
+        }
+        else if (section.key === "pollenCount") {
+          return {
+            ...section,
+            props: {
+              city: weatherData.name,
+              pollenCount: weatherData.pollenCount,
+            },
+          };
+        }
         else {
           return section;
         }

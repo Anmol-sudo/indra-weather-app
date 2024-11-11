@@ -3,16 +3,17 @@ import { View, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 
 const WindForecast = ({ props }) => {
-  let { currentWind, forecast } = props;
+  
+  let { city, currentWind, forecast } = props;
 
+  
   const getWindDirection = (degrees) => {
     const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
     return directions[Math.round(degrees / 45) % 8];
   };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Wind Forecast</Text>
+      <Text style={styles.heading}>Wind Forecast for {city}</Text>
       <View style={styles.currentWind}>
         <Icon name="wind" size={24} color="#0277bd" />
         <Text style={styles.windValue}>

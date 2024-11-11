@@ -23,7 +23,7 @@ const UvIndex = ({ props }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>UV Index</Text>
+      <Text style={styles.heading}>UV Index for {city}</Text>
       <View style={styles.currentUv}>
         <Text style={styles.uvValue}>{currentUv}</Text>
         <Text style={[styles.uvLevel, { color: getUvColor(currentUv) }]}>

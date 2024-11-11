@@ -48,7 +48,7 @@ const Header = ({ onLocationChange, toggleDrawer }) => {
     if (searchQuery.trim()) {
       try {
         const weatherData = await getCurrentWeather(searchQuery);
-        // console.log("Weather data fetched:", weatherData);  Log in Header component
+        
         onLocationChange(searchQuery, weatherData); // Pass both location and weather data
         setIsSearching(false);
         setSearchQuery("");

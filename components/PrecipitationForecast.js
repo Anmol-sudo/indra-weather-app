@@ -1,23 +1,27 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 
 const PrecipitationForecast = ({ props }) => {
-  let { forecast } = props;
+  let { forecast, city } = props;
+ 
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Precipitation Forecast</Text>
-      {forecast.map((item, index) => (
-        <View key={index} style={styles.forecastItem}>
-          <Text style={styles.time}>{item.time}</Text>
-          <Icon
-            name={item.type === "rain" ? "cloud-rain" : "cloud-snow"}
-            size={24}
-            color="#4287f5"
-          />
-          <Text style={styles.amount}>{item.amount}</Text>
-        </View>
-      ))}
+      <Text style={styles.heading}>Precipitation Forecast for {city}</Text>
+      {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
+        {forecast.map((item, index) => (
+          <View key={index} style={styles.forecastItem}>
+            <Text style={styles.time}>{item.time}</Text>
+            <Icon
+              name={item.type === "rain" ? "cloud-rain" : "cloud-snow"}
+              size={24}
+              color="#4287f5"
+            />
+            <Text style={styles.amount}>{item.amount}</Text>
+          </View>
+        ))}
+      {/* </ScrollView> */}
     </View>
   );
 };

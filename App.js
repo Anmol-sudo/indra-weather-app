@@ -33,7 +33,10 @@ import {
   sampleMainDisplayData,
   sampleMetricData,
 } from "./data/sampleWeatherData";
-import { getCurrentWeather } from "./services/weatherService";
+import {
+  getCurrentWeather,
+  getForecastWeather,
+} from "./services/weatherService";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -44,6 +47,7 @@ const WeatherSection = ({ component: Component, ...props }) => (
 export default function App() {
   const [currentLocation, setCurrentLocation] = useState("Delhi");
   const [weatherData, setWeatherData] = useState(null);
+  const [forecastData, setForecastData] = useState(null);
   const [sections, setSections] = useState([
     {
       key: "main",
@@ -105,9 +109,11 @@ export default function App() {
 
   const fetchWeather = async (location) => {
     try {
-      const data = await getCurrentWeather(location);
-      setWeatherData(data);
-      updateComponentsData(data);
+      const weatherData = await getCurrentWeather(location);
+      const forecastData = await getForecastWeather(location);
+      setWeatherData(weatherData);
+      setForecastData(forecastData);
+      updateComponentsData(weatherData, forecastData);
 
       Vibration.vibrate(500);
     } catch (error) {
@@ -115,23 +121,27 @@ export default function App() {
     }
   };
 
-  const updateComponentsData = (data) => {
+  const updateComponentsData = (weatherData, forecastData) => {
     setSections((prevSections) =>
       prevSections.map((section) => {
         if (section.key === "main") {
           return {
             ...section,
             props: {
-              city: data.name,
-              state: data.sys.country, // You might want to map country code to state name
-              temperature: data.main.temp.toFixed(1),
-              condition: data.weather[0].main,
-              feelsLike: data.main.feels_like.toFixed(1),
-              highTemp: data.main.temp_max.toFixed(1),
-              lowTemp: data.main.temp_min.toFixed(1),
+              city: weatherData.name,
+              state: weatherData.sys.country, // You might want to map country code to state name
+              temperature: weatherData.main.temp.toFixed(1),
+              condition: weatherData.weather[0].main,
+              feelsLike: weatherData.main.feels_like.toFixed(1),
+              highTemp: weatherData.main.temp_max.toFixed(1),
+              lowTemp: weatherData.main.temp_min.toFixed(1),
               lastUpdated: new Date().toLocaleTimeString(),
-              sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString(),
-              sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString(),
+              sunrise: new Date(
+                weatherData.sys.sunrise * 1000
+              ).toLocaleTimeString(),
+              sunset: new Date(
+                weatherData.sys.sunset * 1000
+              ).toLocaleTimeString(),
             },
           };
         } else if (section.key === "metrics") {
@@ -139,16 +149,15 @@ export default function App() {
             ...section,
             props: {
               wind: {
-                speed: data.wind.speed,
-                direction: data.wind.deg,
+                speed: weatherData.wind.speed,
+                direction: weatherData.wind.deg,
               },
-              pressure: data.main.pressure,
-              humidity: data.main.humidity,
-              city: data.name,
+              pressure: weatherData.main.pressure,
+              humidity: weatherData.main.humidity,
+              city: weatherData.name,
             },
           };
         } else if (section.key === "aqi") {
-
           // Function to get AQI description
           const getAQIDescription = (aqi) => {
             if (aqi <= 50) return "Good";
@@ -158,16 +167,51 @@ export default function App() {
             if (aqi <= 300) return "Very Unhealthy";
             return "Hazardous";
           };
-          
+
           return {
             ...section,
             props: {
-              aqi: data.aqi,
-              aqiDescription: getAQIDescription(data.aqi),
-              city: data.name,
+              aqi: weatherData.aqi,
+              aqiDescription: getAQIDescription(weatherData.aqi),
+              city: weatherData.name,
             },
           };
-        } else {
+        } else if (section.key === "precipitation") {
+          const precipitationForecast = forecastData.list
+            .slice(0, 8) // Next 24 hours (3-hour steps)
+            .map((item) => ({
+              time: new Date(item.dt * 1000).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              type: item.rain ? "rain" : item.snow ? "snow" : "clear",
+              amount: item.rain
+                ? `${item.rain["3h"]} mm`
+                : item.snow
+                ? `${item.snow["3h"]} mm`
+                : "0 mm",
+            }));
+
+          return {
+            ...section,
+            props: {
+              forecast: precipitationForecast,
+              city: weatherData.name,
+            },
+          };
+        } 
+        else if (section.key === "uvIndex") {
+
+          return {
+            ...section,
+            props: {
+              currentUv: weatherData.uvi,
+              forecast: weatherData.uvForecast,
+              city: weatherData.name,
+            },
+          };
+        } 
+        else {
           return section;
         }
       })

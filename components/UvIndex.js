@@ -2,7 +2,9 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 const UvIndex = ({ props }) => {
-  let { currentUv, forecast } = props;
+  
+  let { city, currentUv, forecast } = props;
+  
   const getUvLevel = (index) => {
     if (index <= 2) return "Low";
     if (index <= 5) return "Moderate";

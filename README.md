@@ -24,7 +24,7 @@ A modern weather application built with React Native that provides real-time wea
 1. Clone the repository
 2. 
 ```bash
-git clone [[repository-url]](https://github.com/AkuSenpai/indra-weather-app)
+git clone https://github.com/AkuSenpai/indra-weather-app
 ```
 
 2. Install dependencies

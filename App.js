@@ -9,34 +9,12 @@ import {
 } from "react-native";
 
 import Header from "./components/Header";
-import MainWeatherDisplay from "./components/MainWeatherDisplay";
-import WeatherMetrics from "./components/WeatherMetrics";
-import HourlyForecast from "./components/HourlyForecast";
-import DailyForecast from "./components/DailyForecast";
-import WeatherAlerts from "./components/WeatherAlerts";
-import AirQualityIndex from "./components/AirQualityIndex"; // Import the new component
-import PrecipitationForecast from "./components/PrecipitationForecast";
-import UvIndex from "./components/UvIndex";
-import WindForecast from "./components/WindForecast";
-import PollenCount from "./components/PollenCount";
-import Astronomy from "./components/Astronomy";
-import WeatherMap from "./components/WeatherMap";
-import {
-  sampleWeatherMapData,
-  sampleAstronomy,
-  samplePollenCount,
-  sampleWindForecast,
-  sampleUvIndex,
-  samplePrecipitationForecast,
-  sampleAlerts,
-  sampleAQI,
-  sampleMainDisplayData,
-  sampleMetricData,
-} from "./data/sampleWeatherData";
+
 import {
   getCurrentWeather,
   getForecastWeather,
 } from "./services/weatherService";
+import { _sections } from "./appConfig";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -48,60 +26,7 @@ export default function App() {
   const [currentLocation, setCurrentLocation] = useState("Delhi");
   const [weatherData, setWeatherData] = useState(null);
   const [forecastData, setForecastData] = useState(null);
-  const [sections, setSections] = useState([
-    {
-      key: "main",
-      component: MainWeatherDisplay,
-      props: sampleMainDisplayData,
-    },
-    {
-      key: "metrics",
-      component: WeatherMetrics,
-      props: sampleMetricData,
-    },
-    {
-      key: "aqi",
-      component: AirQualityIndex,
-      props: sampleAQI,
-    },
-    {
-      key: "precipitation",
-      component: PrecipitationForecast,
-      props: { forecast: samplePrecipitationForecast },
-    },
-    {
-      key: "uvIndex",
-      component: UvIndex,
-      props: sampleUvIndex,
-    },
-    {
-      key: "windForecast",
-      component: WindForecast,
-      props: sampleWindForecast,
-    },
-    {
-      key: "pollenCount",
-      component: PollenCount,
-      props: samplePollenCount,
-    },
-    {
-      key: "astronomy",
-      component: Astronomy,
-      props: sampleAstronomy,
-    },
-    {
-      key: "weatherMap",
-      component: WeatherMap,
-      props: sampleWeatherMapData,
-    },
-    {
-      key: "alerts",
-      component: WeatherAlerts,
-      props: { alerts: sampleAlerts },
-    }, // Add this line
-    { key: "hourly", component: HourlyForecast },
-    { key: "daily", component: DailyForecast },
-  ]);
+  const [sections, setSections] = useState(_sections);
 
   useEffect(() => {
     fetchWeather(currentLocation);
@@ -109,11 +34,11 @@ export default function App() {
 
   const fetchWeather = async (location) => {
     try {
-      const weatherData = await getCurrentWeather(location);
-      const forecastData = await getForecastWeather(location);
-      setWeatherData(weatherData);
-      setForecastData(forecastData);
-      updateComponentsData(weatherData, forecastData);
+      let _weatherData = await getCurrentWeather(location);
+      let _forecastData = await getForecastWeather(location);
+      setWeatherData(_weatherData);
+      setForecastData(_forecastData);
+      updateComponentsData(_weatherData, _forecastData);
 
       Vibration.vibrate(500);
     } catch (error) {
